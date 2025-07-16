@@ -2,13 +2,16 @@ from flask import Flask, render_template, request
 import sqlite3
 from datetime import datetime
 import os
+import sqlitecloud
+#sqlitecloud://cmq6frwshz.g4.sqlite.cloud:8860/savi_dados_unificado.db?apikey=Dor8OwUECYmrbcS5vWfsdGpjCpdm9ecSDJtywgvRw8k
 
 app = Flask(__name__)
 
 def get_db_connection():
     """Conecta ao banco de dados SQLite"""
-    conn = sqlite3.connect('savi_dados_unificado.db')
-    conn.row_factory = sqlite3.Row
+    conn = sqlitecloud.connect("sqlitecloud://cmq6frwshz.g4.sqlite.cloud:8860/savi_dados_unificado.db?apikey=Dor8OwUECYmrbcS5vWfsdGpjCpdm9ecSDJtywgvRw8k")
+
+    conn.row_factory = sqlitecloud.Row
     return conn
 
 def parse_date(date_str):
@@ -197,95 +200,5 @@ def test_db():
         return f"Erro ao conectar ao banco de dados: {e}"
 
 if __name__ == '__main__':
-    # Verificar se o banco de dados existe
-    if not os.path.exists('savi_dados_unificado.db'):
-        print("AVISO: Banco de dados 'savi_dados_unificado.db' não encontrado!")
-        print("Criando banco de dados de exemplo para teste...")
-        
-        # Criar banco de dados de exemplo
-        conn = sqlite3.connect('savi_dados_unificado.db')
-        cursor = conn.cursor()
-        
-        # Criar tabela de exemplo
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS producao (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            usuario_nome TEXT,
-            senha TEXT,
-            data_autorizacao TEXT
-        )
-        ''')
-        
-        # Inserir dados de exemplo com alguns pacientes tendo 12 senhas
-        dados_exemplo = [
-            # João Silva - 12 senhas (para teste do contador)
-            ('João Silva', 'PWD001', '2024-01-15'),
-            ('João Silva', 'PWD002', '2024-01-16'),
-            ('João Silva', 'PWD003', '2024-01-17'),
-            ('João Silva', 'PWD004', '2024-01-18'),
-            ('João Silva', 'PWD005', '2024-01-19'),
-            ('João Silva', 'PWD006', '2024-01-20'),
-            ('João Silva', 'PWD007', '2024-01-21'),
-            ('João Silva', 'PWD008', '2024-01-22'),
-            ('João Silva', 'PWD009', '2024-01-23'),
-            ('João Silva', 'PWD010', '2024-01-24'),
-            ('João Silva', 'PWD011', '2024-01-25'),
-            ('João Silva', 'PWD012', '2024-01-26'),
-            
-            # Maria Santos - 12 senhas (para teste do contador)
-            ('Maria Santos', 'PWD013', '2024-01-15'),
-            ('Maria Santos', 'PWD014', '2024-01-16'),
-            ('Maria Santos', 'PWD015', '2024-01-17'),
-            ('Maria Santos', 'PWD016', '2024-01-18'),
-            ('Maria Santos', 'PWD017', '2024-01-19'),
-            ('Maria Santos', 'PWD018', '2024-01-20'),
-            ('Maria Santos', 'PWD019', '2024-01-21'),
-            ('Maria Santos', 'PWD020', '2024-01-22'),
-            ('Maria Santos', 'PWD021', '2024-01-23'),
-            ('Maria Santos', 'PWD022', '2024-01-24'),
-            ('Maria Santos', 'PWD023', '2024-01-25'),
-            ('Maria Santos', 'PWD024', '2024-01-26'),
-            
-            # Ana Costa - 8 senhas
-            ('Ana Costa', 'PWD025', '2024-01-18'),
-            ('Ana Costa', 'PWD026', '2024-01-19'),
-            ('Ana Costa', 'PWD027', '2024-01-20'),
-            ('Ana Costa', 'PWD028', '2024-01-21'),
-            ('Ana Costa', 'PWD029', '2024-01-22'),
-            ('Ana Costa', 'PWD030', '2024-01-23'),
-            ('Ana Costa', 'PWD031', '2024-01-24'),
-            ('Ana Costa', 'PWD032', '2024-01-25'),
-            
-            # Pedro Oliveira - 5 senhas
-            ('Pedro Oliveira', 'PWD033', '2024-01-21'),
-            ('Pedro Oliveira', 'PWD034', '2024-01-22'),
-            ('Pedro Oliveira', 'PWD035', '2024-01-23'),
-            ('Pedro Oliveira', 'PWD036', '2024-01-24'),
-            ('Pedro Oliveira', 'PWD037', '2024-01-25'),
-            
-            # Carlos Ferreira - 12 senhas (para teste do contador)
-            ('Carlos Ferreira', 'PWD038', '2024-02-01'),
-            ('Carlos Ferreira', 'PWD039', '2024-02-02'),
-            ('Carlos Ferreira', 'PWD040', '2024-02-03'),
-            ('Carlos Ferreira', 'PWD041', '2024-02-04'),
-            ('Carlos Ferreira', 'PWD042', '2024-02-05'),
-            ('Carlos Ferreira', 'PWD043', '2024-02-06'),
-            ('Carlos Ferreira', 'PWD044', '2024-02-07'),
-            ('Carlos Ferreira', 'PWD045', '2024-02-08'),
-            ('Carlos Ferreira', 'PWD046', '2024-02-09'),
-            ('Carlos Ferreira', 'PWD047', '2024-02-10'),
-            ('Carlos Ferreira', 'PWD048', '2024-02-11'),
-            ('Carlos Ferreira', 'PWD049', '2024-02-12'),
-        ]
-        
-        cursor.executemany(
-            'INSERT INTO producao (usuario_nome, senha, data_autorizacao) VALUES (?, ?, ?)',
-            dados_exemplo
-        )
-        
-        conn.commit()
-        conn.close()
-        print("Banco de dados de exemplo criado com sucesso!")
-        print("3 pacientes com exatamente 12 senhas foram criados para teste.")
-    
+ 
     app.run(debug=True, host='0.0.0.0', port=5000)
